@@ -1,0 +1,3 @@
+<div>
+    Komentar ({{ $jumlahKomentar }})
+</div>
