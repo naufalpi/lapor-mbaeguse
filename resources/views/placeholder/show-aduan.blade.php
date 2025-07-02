@@ -16,9 +16,9 @@
                 <div class="h-7 bg-gray-200 rounded-full  w-40 mb-3"></div>
             </span>
 
-            <span class="flex items-center gap-1">
+            {{-- <span class="flex items-center gap-1">
                 <div class="h-7 bg-gray-200 rounded-full  w-50 mb-3"></div>
-            </span>
+            </span> --}}
 
             <span class="flex items-center gap-1">
                 <div class="h-7 bg-gray-200 rounded-full  w-40 mb-3"></div>

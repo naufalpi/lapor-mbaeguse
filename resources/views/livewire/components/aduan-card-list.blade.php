@@ -13,7 +13,7 @@
             </span>
             <input
                 type="text"
-                wire:model.live.debounce.300ms="search"
+                wire:model.live.debounce.500ms="search"
                 placeholder="Cari aduan..."
                 class="pl-10 pr-4 py-2 w-full border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-800 focus:border-indigo-800 transition"
             />
@@ -54,7 +54,7 @@
     </div>
 
 
-    <div wire:loading.delay wire:target="search,filterKategori,filterOpd,filterStatus"class="flex justify-center items-center h-20 text-gray-500 mb-4">
+    <div wire:loading.delay wire:target="search,filterKategori,filterOpd,filterStatus"class="flex justify-center items-center h-10 text-gray-500 mb-10">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" class="h-20 w-20">
             <circle fill="#404185" stroke="#404185" stroke-width="2" r="15" cx="40" cy="100">
                 <animate attributeName="opacity" calcMode="spline" dur="0.6" values="1;0;1;" keySplines=".5 0 .5 1;.5 0 .5 1"
@@ -92,7 +92,7 @@
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400 mr-1" viewBox="0 0 448 512">
                                 <path d="M224 256A128 128 0 1 0 224 0a128 128 0 1 0 0 256zm-45.7 48C79.8 304 0 383.8 0 482.3C0 498.7 13.3 512 29.7 512l388.6 0c16.4 0 29.7-13.3 29.7-29.7C448 383.8 368.2 304 269.7 304l-91.4 0z"/>
                             </svg>
-                            <span>{{ $aduan->nama }}</span>
+                            <span>{{ Str::limit($aduan->nama, 15) }}</span>
                         </div>
                         <p class="text-sm">
                             {{ $aduan->created_at->format('d M Y H:i') }} WIB   
@@ -118,7 +118,7 @@
     </div>
 
     <div class="mt-4">
-        {{ $aduans->links() }}
+        {{ $aduans->links(data: ['scrollTo' => false]) }}
     </div>
 
  

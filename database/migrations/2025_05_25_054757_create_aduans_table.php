@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('nomor_tiket')->unique();
             $table->string('lokasi');    
             $table->text('lampiran')->nullable();
+            $table->boolean('is_visible')->default(false);
             $table->enum('status', ['Menunggu', 'Diproses', 'Selesai'])->default('Menunggu');
             $table->foreignId('opd_id')->nullable()->constrained()->nullOnDelete();
             $table->timestamps();

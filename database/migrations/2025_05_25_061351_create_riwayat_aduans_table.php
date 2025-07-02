@@ -13,8 +13,9 @@ return new class extends Migration
     {
         Schema::create('riwayat_aduans', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('aduan_id')->constrained()->cascadeOnDelete();
-            $table->string('status');
+            $table->foreignId('aduan_id')->constrained()->onDelete('cascade');
+            $table->foreignId('user_id')->nullable()->constrained()->onDelete('set null');
+            $table->text('status');
             $table->text('keterangan')->nullable();
             $table->timestamps();
         });

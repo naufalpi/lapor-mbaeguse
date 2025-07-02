@@ -52,4 +52,9 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Opd::class);
     }
+
+    public function riwayats()
+    {
+        return $this->hasMany(RiwayatAduan::class);
+    }
 }

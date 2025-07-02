@@ -43,6 +43,7 @@ class AduanCardList extends Component
     public function render()
     {
         $aduans = Aduan::with('kategoris')
+            ->where('is_visible', true)
             ->when($this->search, function ($query) {
                 $query->where(function ($q) {
                     $q->where('judul', 'like', '%' . $this->search . '%')

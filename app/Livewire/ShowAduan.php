@@ -16,8 +16,9 @@ class ShowAduan extends Component
     public function mount($slug)
     {
         $this->slug = $slug;
-        $this->aduan = Aduan::with(['kategoris', 'tanggapans', 'komentars'])->where('slug', $slug)->firstOrFail();
+        $this->aduan = Aduan::with(['kategoris', 'tanggapans', 'komentars', 'riwayats'])->where('slug', $slug)->firstOrFail();
     }
+
 
     public function placeholder()
     {

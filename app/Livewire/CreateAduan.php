@@ -3,11 +3,12 @@
 namespace App\Livewire;
 
 use App\Models\Aduan;
+use Livewire\Component;
 use App\Models\Kategori;
 use Livewire\Attributes\On;
-use Livewire\Attributes\Title;
-use Livewire\Component;
+use App\Models\RiwayatAduan;
 use Livewire\WithFileUploads;
+use Livewire\Attributes\Title;
 
 class CreateAduan extends Component
 {
@@ -24,7 +25,7 @@ class CreateAduan extends Component
     public $lampiran = [];
 
      protected $rules = [
-        'nama' => 'required|string|max:100',
+        'nama' => 'nullable|string|max:100',
         'nomor_wa' => 'required|digits_between:9,15',
         'email' => 'nullable|email|max:100',
         'lokasi' => 'required|string|max:255',
@@ -51,6 +52,11 @@ class CreateAduan extends Component
     {
         $validated = $this->validate();
 
+        // Jika nama kosong, isi dengan 'Anonim'
+        if (empty(trim($this->nama))) {
+            $this->nama = 'Anonim';
+        }
+
         $aduan = new Aduan();
         $aduan->nama = $this->nama;
         $aduan->nomor_wa = $this->nomor_wa;
@@ -75,6 +81,13 @@ class CreateAduan extends Component
             $aduan->lampiran = json_encode($paths);
             $aduan->save();
         }
+
+        // RiwayatAduan::create([
+        //     'aduan_id' => $aduan->id,
+        //     'user_id' => null, // guest user
+        //     'status' => 'Dibuat',
+        //     'keterangan' => 'Aduan dibuat oleh',
+        // ]);
 
 
         // Reset form setelah submit

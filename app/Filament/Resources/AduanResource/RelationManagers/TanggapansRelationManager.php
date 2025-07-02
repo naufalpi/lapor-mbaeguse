@@ -3,14 +3,15 @@
 namespace App\Filament\Resources\AduanResource\RelationManagers;
 
 use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
+use Filament\Forms\Form;
 use Filament\Tables\Table;
+use App\Models\RiwayatAduan;
 use Illuminate\Support\Facades\Auth;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Resources\RelationManagers\RelationManager;
 
 class TanggapansRelationManager extends RelationManager
 {
@@ -59,6 +60,8 @@ class TanggapansRelationManager extends RelationManager
     {
         return $table
             ->recordTitleAttribute('isi_tanggapan')
+            ->emptyStateHeading('Belum ada tanggapan yang diberikan')
+            ->emptyStateDescription('')
             ->columns([
                 Tables\Columns\TextColumn::make('isi_tanggapan'),
                 Tables\Columns\TextColumn::make('created_at')
@@ -69,9 +72,22 @@ class TanggapansRelationManager extends RelationManager
             ->filters([
                 //
             ])
-            ->headerActions([
-                Tables\Actions\CreateAction::make(),
+           ->headerActions([
+                Tables\Actions\CreateAction::make()
+                    ->after(function ($record, $livewire) {
+                        $user = Auth::user();
+                        $opdNama = $user->opd->nama ?? 'Pemerintah Kabupaten Banjarnegara';
+
+                        \App\Models\RiwayatAduan::create([
+                            'aduan_id'   => $livewire->getOwnerRecord()->id,
+                            'user_id'    => $user->id,
+                            'status'     => 'Ditanggapi',
+                            'keterangan' => 'Aduan ditanggapi oleh ' . $opdNama,
+                        ]);
+                    }),
             ])
+
+
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
@@ -88,4 +104,6 @@ class TanggapansRelationManager extends RelationManager
         $data['user_id'] = Auth::id();
         return $data;
     }
+
+   
 }

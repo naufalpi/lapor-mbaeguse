@@ -53,6 +53,7 @@ class TanggapanResource extends Resource
         return $table
             ->columns($columns)
             ->defaultSort('created_at', 'desc')
+            ->emptyStateHeading('Belum ada tanggapan yang diberikan')
             ->filters([
                 //
             ])

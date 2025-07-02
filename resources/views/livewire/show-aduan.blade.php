@@ -2,105 +2,102 @@
 
     {{-- Sidebar Riwayat --}}
 
-    <div class="border border-gray-300 rounded-lg overflow-hidden">
-        <h2 class="text-lg font-semibold text-gray-800 bg-gray-100 text-center  py-2">
-            Riwayat Aduan
-        </h2>
-        <aside class="lg:col-span-1 space-y-6 max-h-[500px] overflow-y-auto pr-1 pl-5 pt-3">
+    <div class="col-span-1">
+        <div class="border border-gray-300 rounded-lg overflow-hidden h-[500px] flex flex-col">
+            <h2 class="text-lg font-semibold text-gray-800 bg-gray-100 text-center py-2">
+                Riwayat Aduan
+            </h2>
+            <aside class="overflow-y-auto px-4 pt-4 space-y-6">
+
         
-            <ol class="relative border-s border-gray-200 dark:border-gray-700">                  
-                <li class="mb-10 ms-6">            
-                    <span class="absolute flex items-center justify-center w-6 h-6 bg-blue-100 rounded-full -start-3 ring-7 ring-gray-900  ">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                        </svg>
+            <!-- Riwayat Awal: Aduan Dibuat -->
+            <div class="ps-2 my-2 first:mt-0">
+                <h3 class="text-xs font-medium uppercase text-gray-500">
+                    {{ \Carbon\Carbon::parse($aduan->created_at)->translatedFormat('d F Y \P\u\k\u\l H.i') }} WIB
+                </h3>
+            </div>
 
-                    </span>
-                    <div class="items-center justify-between p-4 bg-white border border-gray-600 rounded-lg shadow-xs sm:flex ">
-                        <div class="text-sm text-gray-800 ">
-                                <p><strong>Aduan dibuat oleh </strong></p>
-                                <p>{{ $aduan->nama }}</p>
-                                <p>{{ $aduan->created_at->format('d M Y H:i') }} WIB</p>
-                            
-                            </div>
-                </li>
-                <li class="mb-10 ms-6">
-                    <span class="absolute flex items-center justify-center w-6 h-6 bg-blue-100 rounded-full -start-3 ring-7 ring-gray-900  ">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M7.217 10.907a2.25 2.25 0 1 0 0 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186 9.566-5.314m-9.566 7.5 9.566 5.314m0 0a2.25 2.25 0 1 0 3.935 2.186 2.25 2.25 0 0 0-3.935-2.186Zm0-12.814a2.25 2.25 0 1 0 3.933-2.185 2.25 2.25 0 0 0-3.933 2.185Z" />
-                        </svg>
-
-                    </span>
-                    <div class="p-4 bg-white border border-gray-600 rounded-lg shadow-xs ">
-                        <h3 class="font-bold text-gray-800 mb-2">Didisposisi ke </h3>
-                        <h1>{{ $aduan->opd?->nama ?? '-' }}</h1>
-                        <p class="text-sm">{{ $aduan->updated_at->format('d M Y H:i') }} WIB</p>
+            <div class="flex gap-x-3">
+                <!-- Icon -->
+                <div class="relative last:after:hidden after:absolute after:top-7 after:bottom-0 after:start-3.5 after:w-px after:-translate-x-[0.5px] after:bg-gray-200 ">
+                    <div class="relative z-10 size-7 flex justify-center items-center">
+                        <div class="size-2 rounded-full bg-gray-400 "></div>
                     </div>
-                </li>
-                <li class="mb-10 ms-6">
-                    <span class="absolute flex items-center justify-center w-6 h-6 bg-blue-100 rounded-full -start-3 ring-7 ring-gray-900  ">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 7.5V6.108c0-1.135.845-2.098 1.976-2.192.373-.03.748-.057 1.123-.08M15.75 18H18a2.25 2.25 0 0 0 2.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 0 0-1.123-.08M15.75 18.75v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5A3.375 3.375 0 0 0 6.375 7.5H5.25m11.9-3.664A2.251 2.251 0 0 0 15 2.25h-1.5a2.251 2.251 0 0 0-2.15 1.586m5.8 0c.065.21.1.433.1.664v.75h-6V4.5c0-.231.035-.454.1-.664M6.75 7.5H4.875c-.621 0-1.125.504-1.125 1.125v12c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V16.5a9 9 0 0 0-9-9Z" />
-                        </svg>
+                </div>
+                <!-- End Icon -->
 
-                    </span>
-                    <div class="p-4 bg-white border border-gray-200 rounded-lg shadow-xs dark:order-gray-200 dark:border-gray-600">
-                        <h3 class="font-bold text-gray-800 mb-2">Ditanggapi</h3>
-                        <div class="text-sm text-gray-800">
-                            <p>5 Mei 2025 pukul 12.12 WIB</p>
-                            <p class="mt-2">Aduan ditanggapi oleh Dinas Pekerjaan Umum, Perumahan dan ESDM DIY</p>
-                        
+                <!-- Right Content -->
+                <div class="grow pt-0.5 pb-2">
+                    <h3 class="flex gap-x-1.5 font-semibold text-gray-800 ">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m3.75 9v6m3-3H9m1.5-12H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
+                        </svg>
+                        Dibuat
+                    </h3>
+                    <p class="mt-1 text-md text-gray-600 ">
+                        Aduan dibuat oleh {{ $aduan->nama }}
+                    </p>
+                </div>
+                <!-- End Right Content -->
+            </div>
+
+
+       
+
+                 
+            @foreach ($aduan->riwayats as $riwayat)
+                <!-- Heading -->
+                <div class="ps-2 my-2 first:mt-0">
+                    <h3 class="text-xs font-medium uppercase text-gray-500 ">   
+                        {{ \Carbon\Carbon::parse($riwayat->created_at)->translatedFormat('d F Y \P\u\k\u\l H.i') }} WIB
+                    </h3>
+                </div>
+
+                <div class="flex gap-x-3">
+                    <!-- Icon -->
+                    <div class="relative last:after:hidden after:absolute after:top-7 after:bottom-0 after:start-3.5 after:w-px after:-translate-x-[0.5px] after:bg-gray-200 ">
+                        <div class="relative z-10 size-7 flex justify-center items-center">
+                            <div class="size-2 rounded-full bg-gray-400 "></div>
                         </div>
                     </div>
-                </li>
-                <li class="mb-10 ms-6">
-                    <span class="absolute flex items-center justify-center w-6 h-6 bg-blue-100 rounded-full -start-3 ring-8 ring-white dark:ring-gray-900 dark:bg-blue-900">
-                        <svg class="w-2.5 h-2.5 text-blue-800 dark:text-blue-300" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z"/>
-                        </svg>
-                    </span>
-                    <div class="p-4 bg-white border border-gray-200 rounded-lg shadow-xs dark:order-gray-200 dark:border-gray-600">
-                        <h3 class="font-bold text-gray-800 mb-2">Diselesaikan</h3>
-                        <div class="text-sm text-gray-800">
-                            <p>9 Mei 2025 pukul 12.12 WIB</p>
-                            <p class="mt-2">Aduan diselesaikan oleh Dinas Pekerjaan Umum, Perumahan dan ESDM DIY</p>
-                        
-                        </div>
-                    </div>
-                </li>
-            </ol>
+                    <!-- End Icon -->
 
-        </aside>
+                    <!-- Right Content -->
+                    <div class="grow pt-0.5 pb-2">
+                        <h3 class="flex gap-x-1.5 font-semibold text-gray-800 ">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m3.75 9v6m3-3H9m1.5-12H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
+                            </svg>
+                            {{ $riwayat->status }}
+                        </h3>
+                        <p class="mt-1 text-md text-gray-600 ">
+                             {{ $riwayat->keterangan }}
+                        </p>
+                    </div>
+                    <!-- End Right Content -->
+                </div>
+
+                
+            @endforeach
+       
+            </aside>
+
+        </div>
     </div>
 
     {{-- Konten Utama --}}
     <article class="lg:col-span-3 space-y-6">
 
-        {{-- <div>
-            <button 
-                wire:click="backToIndex" 
-                class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
-            >
-                Kembali
-            </button>
-        </div> --}}
-        
         {{-- Info Atas --}}
         <div class="flex flex-wrap items-center gap-4">
             <span class="flex items-center gap-1">
-                <svg class="w-5 h-5 text-gray-800 " aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M18.045 3.007 12.31 3a1.965 1.965 0 0 0-1.4.585l-7.33 7.394a2 2 0 0 0 0 2.805l6.573 6.631a1.957 1.957 0 0 0 1.4.585 1.965 1.965 0 0 0 1.4-.585l7.409-7.477A2 2 0 0 0 21 11.479v-5.5a2.972 2.972 0 0 0-2.955-2.972Zm-2.452 6.438a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"/>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-4">
+                    <path fill-rule="evenodd" d="M7.5 6a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0ZM3.751 20.105a8.25 8.25 0 0 1 16.498 0 .75.75 0 0 1-.437.695A18.683 18.683 0 0 1 12 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 0 1-.437-.695Z" clip-rule="evenodd" />
                 </svg>
+
+
 
                 Oleh: <strong>{{ $aduan->nama }}</strong>
-            </span>
-
-            <span class="flex items-center gap-1">
-                <svg class="w-5 h-5 text-gray-800 " aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14m-7 7V5"/>
-                </svg>
-
-                Melalui: <strong>Website Pengaduan</strong>
             </span>
 
             <span class="flex items-center gap-1">
@@ -142,21 +139,34 @@
 
         {{-- Baris 3: Nomor Tiket (copyable), Tanggal, Kategori --}}
         <div class="flex flex-wrap items-center gap-4">
-            <span class="flex items-center gap-1">
-                <svg class="w-5 h-5 text-gray-800" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M4 5a2 2 0 0 0-2 2v2.5a1 1 0 0 0 1 1 1.5 1.5 0 1 1 0 3 1 1 0 0 0-1 1V17a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2.5a1 1 0 0 0-1-1 1.5 1.5 0 1 1 0-3 1 1 0 0 0 1-1V7a2 2 0 0 0-2-2H4Z"/>
+            <span class="flex items-center gap-1 relative">
+                <!-- Ikon -->
+                <svg class="w-5 h-5 text-gray-800" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                    width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M4 5a2 2 0 0 0-2 2v2.5a1 1 0 0 0 1 1 1.5 1.5 0 1 1 0 3 1 1 0 0 0-1 1V17a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2.5a1 1 0 0 0-1-1 1.5 1.5 0 1 1 0-3 1 1 0 0 0 1-1V7a2 2 0 0 0-2-2H4Z"/>
                 </svg>
 
-                Nomor Tiket: 
+                <!-- Label -->
+                Nomor Tiket:
+
+                <!-- Span dengan tooltip -->
                 <span 
-                    class="bg-gray-100 px-2 py-1 rounded cursor-pointer hover:bg-gray-200 transition" 
-                    x-data 
+                    class="bg-gray-100 px-2 py-1 rounded cursor-pointer hover:bg-gray-200 transition"
+                    x-data
                     @click="navigator.clipboard.writeText('{{ $aduan->nomor_tiket }}')"
-                    title="Klik untuk salin"
+                    data-tooltip-target="tooltip-nomor-tiket"
                 >
                     <strong>{{ $aduan->nomor_tiket }}</strong>
                 </span>
+
+                <!-- Tooltip Flowbite -->
+                <div id="tooltip-nomor-tiket" role="tooltip"
+                    class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-xs opacity-0 tooltip dark:bg-gray-700">
+                    Klik untuk salin
+                    <div class="tooltip-arrow" data-popper-arrow></div>
+                </div>
             </span>
+
 
             
 
@@ -227,21 +237,28 @@
                 <!-- Tindak Lanjut -->
                 <div x-show="tab === 'tindak'">
                     @forelse ($aduan->tanggapans as $t)
-                        <div class="p-4 mb-3 bg-white border rounded-lg shadow-sm">
-                            <div class="text-sm font-semibold text-gray-800">
-                                {{ $t->user_id === 1 ? 'Pemerintah Kabupaten Banjarnegara' : $t->user->opd->nama }}
+                        <div class="p-5 mb-4 bg-white border border-gray-200 rounded-xl shadow-md hover:shadow-lg transition-all">
+                            <div class="flex items-center justify-between mb-2">
+                                <div class="flex items-center gap-2">
+                                    <span class="text-sm font-semibold text-gray-800">
+                                        {{ $t->user_id === 1 ? 'Pemerintah Kabupaten Banjarnegara' : $t->user->opd->nama }}
+                                    </span>
+                                </div>
+                                <span class="text-xs text-gray-500">
+                                    {{ $t->created_at->format('d M Y H:i') }} WIB
+                                </span>
                             </div>
-                            <div class="text-xs text-gray-500 mb-2">
-                                {{ $t->created_at->format('d M Y H:i') }}
-                            </div>
-                            <div class="text-sm text-gray-700">
+                            <div class="text-sm text-gray-700 leading-relaxed">
                                 {{ $t->isi_tanggapan }}
                             </div>
                         </div>
                     @empty
-                        <p class="text-gray-500">Belum ada tindak lanjut.</p>
+                        <div class="p-4 bg-gray-50 border border-dashed border-gray-300 rounded-lg text-center text-sm text-gray-500">
+                            <span>Belum ada tindak lanjut.</span>
+                        </div>
                     @endforelse
                 </div>
+
 
                 <!-- Komentar -->
                 <div x-show="tab === 'komentar'">

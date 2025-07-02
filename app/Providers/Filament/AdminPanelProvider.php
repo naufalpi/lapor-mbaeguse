@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Pages\Auth\LoginCustom;
 use Filament\Facades\Filament;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
@@ -18,6 +19,7 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use App\Filament\Pages\Auth\Login;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -36,15 +38,21 @@ class AdminPanelProvider extends PanelProvider
                 ]);
             }
         });
-
+        
         return $panel
             ->default()
             ->id('admin')
             ->path('admin')
             ->spa()
-            ->login()
+            ->favicon(asset('images/favicon.ico'))
+            ->brandName('LAPOR MBAE GUSE')
+            ->sidebarCollapsibleOnDesktop()
+            
+            // ->brandLogo(asset('images/banjarnegara.png'))
+      
+            ->login(Login::class)
             ->colors([
-                'primary' => Color::Amber,
+                'primary' => Color::Blue,
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
