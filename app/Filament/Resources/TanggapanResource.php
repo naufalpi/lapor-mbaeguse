@@ -21,9 +21,9 @@ class TanggapanResource extends Resource
 
     
     protected static ?string $navigationIcon = 'heroicon-o-chat-bubble-left-ellipsis';
-     protected static ?string $navigationGroup = 'Kelola Aduan';
-    protected static ?string $label = 'Tanggapan/Tindak Lanjut';
-    protected static ?string $pluralLabel = 'List Tanggapan';
+    protected static ?string $navigationGroup = 'Kelola Aduan';
+    protected static ?string $navigationLabel = 'List Tanggapan';
+
 
     public static function form(Form $form): Form
     {
@@ -38,12 +38,18 @@ class TanggapanResource extends Resource
         $user = Auth::user();
 
         $columns = [
-            TextColumn::make('aduan.nomor_tiket')->label('Nomor Tiket'),
-            TextColumn::make('aduan.judul')->label('Judul')->limit(20),
-            TextColumn::make('aduan.opd.nama')
-                ->label('OPD')
-                ->formatStateUsing(fn ($state, $record) => $record->aduan->opd?->nama ?? '-'),
-            TextColumn::make('isi_tanggapan')->label('Isi Tanggapan')->limit(40),
+            TextColumn::make('aduan.nomor_tiket')
+                ->label('Nomor Tiket'),
+            TextColumn::make('aduan.judul')
+                ->label('Judul')
+                ->limit(20),
+            TextColumn::make('created_at')
+                ->dateTime('d M Y H:i')
+                ->label('Tanggal')
+                ->sortable(),
+            TextColumn::make('isi_tanggapan')
+                ->label('Isi Tanggapan')
+                ->limit(20),
         ];
 
         if ($user && $user->role === 'superadmin') {

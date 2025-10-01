@@ -1,5 +1,10 @@
 <div>
-    <x-layouts.partials.hero />
+    @include('components.layouts.partials.hero', [
+        'jumlahHariIni' => $jumlahHariIni,
+        'jumlahBulanIni' => $jumlahBulanIni,
+        'jumlahTahunIni' => $jumlahTahunIni,
+        'jumlahSemua' => $jumlahSemua,
+    ])
     
     <div class="max-w-7xl mx-auto px-4 py-20">
         <h1 class="text-3xl font-bold text-center text-transparent text-shadow-md bg-clip-text bg-gradient-to-r from-yellow-400 to-blue-600 mb-6 relative">

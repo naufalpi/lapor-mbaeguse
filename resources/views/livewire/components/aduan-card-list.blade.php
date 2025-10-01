@@ -14,7 +14,7 @@
             <input
                 type="text"
                 wire:model.live.debounce.500ms="search"
-                placeholder="Cari aduan..."
+                placeholder="Cari berdasarkan judul, isi, atau nomor tiket..."
                 class="pl-10 pr-4 py-2 w-full border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-800 focus:border-indigo-800 transition"
             />
         </div>

@@ -9,7 +9,7 @@ class Komentar extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['aduan_id', 'nama', 'email', 'pesan'];
+    protected $fillable = ['aduan_id', 'nama', 'email', 'pesan', 'ip_address'];
 
     public function aduan()
     {

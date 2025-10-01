@@ -2,21 +2,25 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\UserResource\Pages;
-use App\Filament\Resources\UserResource\RelationManagers;
-use Filament\Tables\Columns\TextColumn;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Carbon;
-use App\Models\User;
 use App\Models\Opd;
 use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
+use App\Models\User;
 use Filament\Tables;
+use Filament\Forms\Form;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Carbon;
+use Filament\Resources\Resource;
+use Illuminate\Support\Facades\Cache;
+use App\Filament\Exports\UserExporter;
+use Filament\Tables\Columns\TextColumn;
 use Illuminate\Support\Facades\Auth;    
+use Filament\Tables\Actions\ExportAction;
+use Illuminate\Database\Eloquent\Builder;
+use Filament\Tables\Actions\ExportBulkAction;
+use App\Filament\Resources\UserResource\Pages;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Resources\UserResource\RelationManagers;
+
 
 
 
@@ -27,13 +31,14 @@ class UserResource extends Resource
 
     protected static ?string $navigationGroup = 'Manajemen Data';
     protected static ?string $navigationIcon = 'heroicon-o-users';
-    protected static ?string $navigationLabel = 'Admin';
+    protected static ?string $navigationLabel = 'User';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
                 Forms\Components\TextInput::make('name')
+                    ->label('Username')
                     ->required()
                     ->maxLength(255),
                 Forms\Components\TextInput::make('email')
@@ -48,10 +53,14 @@ class UserResource extends Resource
                     ->dehydrated(fn ($state) => filled($state)),
                 Forms\Components\Select::make('role')
                     ->options([
+                        'bupati' => 'Bupati',
+                        'wabup' => 'Wakil Bupati',
+                        'sekda' => 'Sekretaris Daerah',
                         'superadmin' => 'Super Admin',
                         'opd' => 'Admin OPD',
                     ])
-                    ->required(),
+                    ->required()
+                    ->live(),
                 Forms\Components\Select::make('opd_id')
                     ->label('OPD')
                     ->options(Opd::pluck('nama', 'id'))
@@ -65,15 +74,16 @@ class UserResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name')->sortable()->searchable(),
+                Tables\Columns\TextColumn::make('name')->label('Username')->sortable()->searchable(),
                 Tables\Columns\TextColumn::make('email')->sortable()->searchable(),
                 Tables\Columns\TextColumn::make('role')->badge()->colors([
                     'success' => 'superadmin',
-                    'info' => 'opd',
+                    'warning' => 'opd',
+                    'info' => 'bupati',
+                    'info' => 'wabup',
+                    'info' => 'sekda',
                 ]),
                 Tables\Columns\TextColumn::make('opd.nama')->label('OPD')->sortable()->limit(30)->searchable(),
-
-                // ✅ Kolom status online/offline
                 Tables\Columns\TextColumn::make('last_online_status')
                     ->label('Status Online')
                     ->getStateUsing(function ($record) {
@@ -95,12 +105,19 @@ class UserResource extends Resource
             ->filters([
                 //
             ])
+            ->headerActions([
+                ExportAction::make()
+                    ->exporter(UserExporter::class)
+               
+            ])
             ->actions([
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
+                     ExportBulkAction::make()
+                ->exporter(UserExporter::class)
                 ]),
             ]);
     }

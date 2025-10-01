@@ -22,7 +22,11 @@ class Aduan extends Model
         'lampiran',
         'nomor_tiket',
         'status',
-        'opd_id', 
+        'opd_id',
+        'is_visible',
+        'alasan_tolak', 
+        'is_verified',
+        'ip_address',
     ];
 
     protected $casts = [

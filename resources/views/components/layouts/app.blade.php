@@ -6,6 +6,7 @@
         <link rel="icon" type="image/png" href="{{ asset('images/favicon.ico') }}">
         <title>{{ $title ?? 'Lapor Mbae Guse' }}</title>
 
+        @livewireStyles
         @vite('resources/css/app.css')
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   
@@ -20,55 +21,57 @@
 
         <x-layouts.partials.footer />
 
-    @stack('scripts')
+        @livewireScripts
 
-    <script>
-        function setupNavbarScrollEffect() {
-            const navbar = document.getElementById('navbar');
-            if (!navbar) return;
+        @stack('scripts')
 
-            let isScrolled = false;
+        <script>
+            function setupNavbarScrollEffect() {
+                const navbar = document.getElementById('navbar');
+                if (!navbar) return;
 
-            window.addEventListener('scroll', function () {
-                if (window.scrollY > 50) {
-                    isScrolled = true;
-                    navbar.classList.remove('bg-transparent');
-                    navbar.classList.add('bg-gray-900/80', 'shadow');
-                } else {
-                    isScrolled = false;
-                    navbar.classList.remove('bg-gray-900/80', 'shadow');
-                    navbar.classList.add('bg-transparent');
-                }
-            });
+                let isScrolled = false;
 
-            navbar.addEventListener('mouseenter', function () {
-                if (!isScrolled) {
-                    navbar.classList.remove('bg-transparent');
-                    navbar.classList.add('bg-gray-900/80', 'shadow');
-                }
-            });
+                window.addEventListener('scroll', function () {
+                    if (window.scrollY > 50) {
+                        isScrolled = true;
+                        navbar.classList.remove('bg-transparent');
+                        navbar.classList.add('bg-gray-900/80', 'shadow');
+                    } else {
+                        isScrolled = false;
+                        navbar.classList.remove('bg-gray-900/80', 'shadow');
+                        navbar.classList.add('bg-transparent');
+                    }
+                });
 
-            navbar.addEventListener('mouseleave', function () {
-                if (!isScrolled) {
-                    navbar.classList.remove('bg-gray-900/80', 'shadow');
-                    navbar.classList.add('bg-transparent');
-                }
-            });
-        }
+                navbar.addEventListener('mouseenter', function () {
+                    if (!isScrolled) {
+                        navbar.classList.remove('bg-transparent');
+                        navbar.classList.add('bg-gray-900/80', 'shadow');
+                    }
+                });
 
-        document.addEventListener('livewire:navigated', function () {
-            if (window.location.pathname === "/") {
-                setupNavbarScrollEffect();
+                navbar.addEventListener('mouseleave', function () {
+                    if (!isScrolled) {
+                        navbar.classList.remove('bg-gray-900/80', 'shadow');
+                        navbar.classList.add('bg-transparent');
+                    }
+                });
             }
-        });
 
-        // Untuk load awal juga
-        window.addEventListener('DOMContentLoaded', function () {
-            if (window.location.pathname === "/") {
-                setupNavbarScrollEffect();
-            }
-        });
-    </script>
+            document.addEventListener('livewire:navigated', function () {
+                if (window.location.pathname === "/") {
+                    setupNavbarScrollEffect();
+                }
+            });
+
+            // Untuk load awal juga
+            window.addEventListener('DOMContentLoaded', function () {
+                if (window.location.pathname === "/") {
+                    setupNavbarScrollEffect();
+                }
+            });
+        </script>
 
     
 

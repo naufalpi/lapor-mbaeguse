@@ -51,24 +51,34 @@ class KategoriResource extends Resource
 
     public static function table(Table $table): Table
     {
-        return $table
+       return $table
             ->columns([
-                Tables\Columns\TextColumn::make('id')->sortable(),
-                Tables\Columns\TextColumn::make('nama_kategori')->searchable()->sortable(),
-                Tables\Columns\TextColumn::make('created_at')->dateTime('d M Y')->sortable(),
+                Tables\Columns\TextColumn::make('no')
+                    ->label('No')
+                    ->rowIndex(),
+
+                Tables\Columns\TextColumn::make('nama_kategori')
+                    ->searchable()
+                    ->sortable(),
+
+                Tables\Columns\TextColumn::make('created_at')
+                    ->dateTime('d M Y')
+                    ->sortable(),
             ])
-            ->defaultSort('created_at', 'desc')
+            ->defaultSort('nama_kategori', 'asc')
             ->filters([
                 //
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
-                    Tables\Actions\BulkActionGroup::make([
+                Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ]);
+
     }
 
     public static function getRelations(): array

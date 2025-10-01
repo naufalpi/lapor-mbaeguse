@@ -130,7 +130,7 @@
                 <path d="M2 21a1 1 0 0 1 1-1h18a1 1 0 1 1 0 2H3a1 1 0 0 1-1-1Z"/>
                 </svg>
 
-                Didisposisikan ke:
+                Diteruskan ke:
             </span>
             <span class="bg-blue-100 text-black text-sm px-3 py-1 rounded-full">
                 {{ $aduan->opd?->nama ?? '-' }}

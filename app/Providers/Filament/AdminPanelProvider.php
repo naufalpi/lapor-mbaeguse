@@ -47,6 +47,7 @@ class AdminPanelProvider extends PanelProvider
             ->favicon(asset('images/favicon.ico'))
             ->brandName('LAPOR MBAE GUSE')
             ->sidebarCollapsibleOnDesktop()
+           
             
             // ->brandLogo(asset('images/banjarnegara.png'))
       
@@ -77,6 +78,7 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
-            ]);
+            ])
+            ->databaseNotifications();
     }
 }

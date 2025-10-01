@@ -47,7 +47,8 @@ class AduanCardList extends Component
             ->when($this->search, function ($query) {
                 $query->where(function ($q) {
                     $q->where('judul', 'like', '%' . $this->search . '%')
-                    ->orWhere('isi', 'like', '%' . $this->search . '%');
+                    ->orWhere('isi', 'like', '%' . $this->search . '%')
+                    ->orWhere('nomor_tiket', 'like', '%' . $this->search . '%');
                 });
             })
             ->when($this->filterKategori, function ($query) {
@@ -64,9 +65,10 @@ class AduanCardList extends Component
             ->orderBy('created_at', 'desc')
             ->paginate(9);
 
-                // ambil data kategori & opd untuk filter dropdown
-                $kategoris = Kategori::all();
-                $opds = Opd::all();
+            // ambil data kategori & opd untuk filter dropdown
+            $kategoris = Kategori::orderBy('nama_kategori')->get();
+            $opds = Opd::orderBy('nama')->get();
+
 
         return view('livewire.components.aduan-card-list', compact('aduans', 'kategoris', 'opds'));
     }

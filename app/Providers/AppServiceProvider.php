@@ -2,11 +2,18 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\ServiceProvider;
+use App\Models\Opd;
+use App\Models\User;
+use App\Models\Aduan;
+use App\Models\Kategori;
+use App\Models\Tanggapan;
 use Filament\Facades\Filament;
-use Illuminate\Support\Facades\Cache;
+use App\Observers\AduanObserver;
+use App\Observers\GenericObserver;
+use App\Observers\TanggapanObserver;
 use Illuminate\Support\Facades\Auth;
-
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -23,6 +30,13 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+
+        User::observe(GenericObserver::class);
+        Opd::observe(GenericObserver::class);
+        Kategori::observe(GenericObserver::class);
+        Aduan::observe(AduanObserver::class);
+        Tanggapan::observe(TanggapanObserver::class);
+
         Filament::serving(function () {
             if (Auth::check()) {
                 Cache::put('user-is-online-' . Auth::id(), true, now()->addMinutes(2));

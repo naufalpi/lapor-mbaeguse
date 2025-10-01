@@ -1,45 +1,45 @@
+<footer class="bg-gray-900 text-gray-200">
+    <div class="mx-auto w-full max-w-screen-xl px-4 py-8 sm:px-6 lg:px-8">
+        <div class="flex flex-col md:flex-row md:justify-between md:items-start gap-8">
 
-
-<footer class="bg-gray-900">
-    <div class="mx-auto w-full max-w-screen-xl p-4 py-6 lg:py-8">
-        <div class="md:flex md:justify-between">
-
-            <div class="mb-6 md:mb-0">
-                <a href="https://banjarnegarakab.go.id/" class="flex items-center">
-                    <img src="{{ asset('images/banjarnegara.png') }}" class="h-8 me-3" alt="FlowBite Logo" />
-                    <span class="self-center text-2xl font-semibold whitespace-nowrap text-white">Pemerintah Kabupaten Banjarnegara</span>
+            <!-- Logo dan Nama -->
+            <div class="flex flex-col items-center md:items-start text-center md:text-left">
+                <a href="https://banjarnegarakab.go.id/" class="flex items-center mb-3">
+                    <img src="{{ asset('images/banjarnegara.png') }}" class="h-10 me-3" alt="Logo Banjarnegara" />
+                    <span class="text-xl font-semibold">Pemerintah Kabupaten Banjarnegara</span>
                 </a>
-            </div>
-            
-            <div class="flex justify-start md:justify-end w-full">          
-                <div>
-                    <h2 class="mb-6 text-sm font-semibold uppercase text-white">Follow Media Sosial Kami</h2>
-                    <ul class="text-gray-200 font-medium">
-                        <li class="mb-4">
-                            <a href="#" class="hover:underline ">Instagram</a>
-                        </li>
-                        <li class="mb-4">
-                            <a href="#" class="hover:underline">Tiktok</a>
-                        </li>
-                        <li class="mb-4">
-                            <a href="#" class="hover:underline">Youtube</a>
-                        </li>
-                    </ul>
-                </div>  
+                <p class="text-sm text-gray-400 max-w-xs">
+                    Mewujudkan layanan publik yang partisipatif, transparan, dan responsif melalui portal pengaduan resmi.
+                </p>
             </div>
 
+            <!-- Sosial Media -->
+            <div class="flex flex-col items-center md:items-end text-center md:text-right">
+                <h2 class="mb-4 text-sm font-semibold uppercase">Follow Media Sosial Kami</h2>
+                <ul class="space-y-2">
+                    <li>
+                        <a href="#" class="hover:underline">Instagram</a>
+                    </li>
+                    <li>
+                        <a href="#" class="hover:underline">TikTok</a>
+                    </li>
+                    <li>
+                        <a href="#" class="hover:underline">YouTube</a>
+                    </li>
+                </ul>
+            </div>
         </div>
 
-        <hr class="my-6 sm:mx-auto border-gray-700 lg:my-8" />
+        <hr class="my-8 border-gray-700" />
 
-        <div class="flex flex-col items-center gap-2 sm:flex-row sm:items-center sm:justify-between">
-            <span class="text-sm text-gray-200 text-center">
-                © 2025 <a href="https://flowbite.com/" class="hover:underline">Pemerintah Kabupaten Banjarnegara</a>
+        <!-- Copyright -->
+        <div class="flex flex-col sm:flex-row justify-between items-center text-center gap-2 text-sm">
+            <span>
+                © 2025 <a href="https://banjarnegarakab.go.id/" class="hover:underline">Pemerintah Kabupaten Banjarnegara</a>
             </span>
-            <span class="text-sm text-gray-200 text-center">
-                Dikembangkan oleh <a href="https://flowbite.com/" class="hover:underline text-white">Dinas Kominfo Kab. Banjarnegara</a>
+            <span>
+                Dikembangkan oleh <a href="#" class="hover:underline font-semibold text-white">Dinas Kominfo Kab. Banjarnegara</a>
             </span>
         </div>
-
     </div>
 </footer>

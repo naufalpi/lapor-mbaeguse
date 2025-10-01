@@ -3,12 +3,17 @@
 namespace App\Livewire;
 
 use App\Models\Aduan;
+use Carbon\Carbon;
+use App\Mail\AduanTerkirimMail;
+use App\Mail\AdminAduanNotification;
+use Illuminate\Support\Facades\Mail;
 use Livewire\Component;
 use App\Models\Kategori;
 use Livewire\Attributes\On;
 use App\Models\RiwayatAduan;
 use Livewire\WithFileUploads;
 use Livewire\Attributes\Title;
+use Illuminate\Support\Facades\Auth; 
 
 class CreateAduan extends Component
 {
@@ -51,6 +56,11 @@ class CreateAduan extends Component
     public function submit()
     {
         $validated = $this->validate();
+        $today = Carbon::today();
+        $countToday = Aduan::whereDate('created_at', $today)->count() + 1;
+        $day   = now()->format('d');
+        $month = now()->format('m');
+        $year  = now()->format('y'); // 2 digit tahun
 
         // Jika nama kosong, isi dengan 'Anonim'
         if (empty(trim($this->nama))) {
@@ -64,11 +74,18 @@ class CreateAduan extends Component
         $aduan->lokasi = $this->lokasi;
         $aduan->judul = $this->judul;
         $aduan->isi = $this->isi;
-        $aduan->nomor_tiket = 'TKT' . strtoupper(uniqid());
+        $aduan->nomor_tiket = 'TKT' . $day . $month . $year . str_pad($countToday, 2, '0', STR_PAD_LEFT);
         $aduan->status = 'Menunggu';
+        $aduan->ip_address = request()->ip();
 
         // Simpan dulu untuk dapat id
         $aduan->save();
+
+        if ($aduan->email) {
+            Mail::to($aduan->email)->send(new AduanTerkirimMail($aduan));
+            Mail::to('naufalsjob@gmail.com')->send(new AdminAduanNotification($aduan));
+        }
+        
         $aduan->kategoris()->attach($this->kategori);
 
         $paths = [];
@@ -94,7 +111,8 @@ class CreateAduan extends Component
         $this->reset(['nama','nomor_wa','email','lokasi','judul','isi','kategori','lampiran']);
 
         // Kirim event ke browser untuk SweetAlert
-        $this->dispatch('aduanBerhasil');
+        $this->dispatch('aduanBerhasil', nomorTiket: $aduan->nomor_tiket);
+
     }
 
 

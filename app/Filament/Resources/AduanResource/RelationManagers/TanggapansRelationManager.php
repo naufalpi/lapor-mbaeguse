@@ -7,8 +7,10 @@ use Filament\Tables;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 use App\Models\RiwayatAduan;
+use App\Mail\AduanTanggapanMail;
 use Illuminate\Support\Facades\Auth;
-
+use Illuminate\Support\Facades\Mail;
+use App\Mail\AduanTanggapanAdminMail;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Resources\RelationManagers\RelationManager;
@@ -72,18 +74,39 @@ class TanggapansRelationManager extends RelationManager
             ->filters([
                 //
             ])
-           ->headerActions([
+            ->headerActions([
                 Tables\Actions\CreateAction::make()
                     ->after(function ($record, $livewire) {
                         $user = Auth::user();
                         $opdNama = $user->opd->nama ?? 'Pemerintah Kabupaten Banjarnegara';
 
+                        // Buat riwayat aduan
                         \App\Models\RiwayatAduan::create([
                             'aduan_id'   => $livewire->getOwnerRecord()->id,
                             'user_id'    => $user->id,
                             'status'     => 'Ditanggapi',
                             'keterangan' => 'Aduan ditanggapi oleh ' . $opdNama,
                         ]);
+
+                        // Kirim email ke masyarakat
+                        $aduan = $livewire->getOwnerRecord();
+                        if (!empty($aduan->email)) {
+                            Mail::to($aduan->email)->send(
+                                new \App\Mail\AduanTanggapanMail($aduan, $record)
+                            );
+                        }
+
+                        // Kirim email ke semua superadmin kecuali yang menanggapi
+                        $superadmins = \App\Models\User::where('role', 'superadmin')
+                            ->where('id', '!=', $record->user_id) // exclude superadmin yang menanggapi
+                            ->pluck('email');
+
+                        if ($superadmins->isNotEmpty()) {
+                            Mail::to($superadmins)->send(
+                                new \App\Mail\AduanTanggapanAdminMail($aduan, $record)
+                            );
+                        }
+
                     }),
             ])
 

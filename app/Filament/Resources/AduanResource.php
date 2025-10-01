@@ -2,31 +2,38 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\AduanResource\Pages;
-use App\Filament\Resources\AduanResource\RelationManagers;
-use App\Filament\Resources\AduanResource\RelationManagers\TanggapansRelationManager;
-use App\Models\Aduan;
+use App\Models\Opd;
 use Filament\Forms;
+use Filament\Tables;
+use App\Models\Aduan;
+use Filament\Forms\Form;
+use Filament\Tables\Table;
+use Filament\Resources\Resource;
+use Illuminate\Support\HtmlString;
 use Filament\Forms\Components\Grid;
+use Filament\Tables\Actions\Action;
 use Filament\Forms\Components\Group;
-use Filament\Forms\Components\Placeholder;
-use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Toggle;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
-use Filament\Support\Enums\FontWeight;
 
-use Filament\Tables;
-use Filament\Tables\Actions\Action;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\Auth; 
+use Filament\Forms\Components\Section;
+use Filament\Support\Enums\FontWeight;
+use Filament\Forms\Components\Textarea;
+use Filament\Tables\Columns\TextColumn;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\HtmlString;
+use Filament\Forms\Components\ViewField;
 use Filament\Tables\Columns\ToggleColumn;
+use Illuminate\Database\Eloquent\Builder;
+use Filament\Forms\Components\Placeholder;
+use App\Filament\Resources\AduanResource\Pages;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Resources\AduanResource\RelationManagers;
+use App\Filament\Resources\AduanResource\RelationManagers\TanggapansRelationManager;
+
+use App\Filament\Exports\AduanExporter;
+use Filament\Tables\Actions\ExportAction;
 
 
 class AduanResource extends Resource
@@ -40,78 +47,46 @@ class AduanResource extends Resource
     public static function form(Form $form): Form
     {
         return $form->schema([
+          
+
             Section::make('Informasi Aduan')
                 ->schema([
-                    Grid::make(2)
-                        ->schema([
-                            Group::make([
-                                Placeholder::make('created_at')
-                                    ->label('Dibuat Pada')
-                                    ->content(fn ($record) => $record->created_at
-                                        ? $record->created_at->timezone('Asia/Jakarta')->format('d M Y H:i')
-                                        : '-')
-                                    ->extraAttributes(['class' => 'font-semibold text-gray-700']),
+                    ViewField::make('informasi_aduan')
+                        ->view('filament.resources.aduan-resource.widgets.aduan-detail'),
+                ]),
+            
+            Section::make('Verifikasi Aduan')
+                ->schema([
+                    Radio::make('is_verified')
+                        ->label('Status Verifikasi')
+                        ->options([
+                            '1' => 'Diterima',
+                            '0' => 'Ditolak',
+                        ])
+                        ->inline()
+                        ->required()
+                        ->live()
+                        ->afterStateUpdated(function ($state, callable $set) {
+                            if ($state === '1') {
+                                // Kalau diterima, bersihkan alasan penolakan
+                                $set('alasan_tolak', null);
+                            } else {
+                                // Kalau ditolak, tetap kosong atau reset lainnya jika perlu
+                                $set('alasan_tolak', '');
+                            }
+                        }),
 
-                                Placeholder::make('nomor_tiket')
-                                    ->label('No. Tiket')
-                                    ->content(fn ($record) => $record->nomor_tiket),
 
-                                Placeholder::make('judul')
-                                    ->label('Judul')
-                                    ->content(fn ($record) => $record->judul),
-
-                                Placeholder::make('isi')
-                                    ->label('Isi Laporan')
-                                    ->content(fn ($record) => $record->isi),
-
-                                
-
-                                Placeholder::make('kategoris')
-                                    ->label('Kategori')
-                                    ->content(fn ($record) => $record->kategoris->pluck('nama_kategori')->implode(', ')),
-
-                                Placeholder::make('lampiran')
-                                    ->label('Lampiran')
-                                    ->content(function ($record) {
-                                        if (!$record->lampiran) return '-';
-                                        $lampiran = json_decode($record->lampiran, true);
-                                        return new HtmlString(
-                                            collect($lampiran)->map(function ($path, $index) {
-                                                $url = asset('storage/' . $path);
-                                                $label = 'Lampiran ' . ($index + 1);
-                                                return "<a href='{$url}' target='_blank' class='text-primary-600 underline hover:text-primary-700 transition'>{$label}</a>";
-                                            })->implode('<br>')
-                                        );
-                                    }),
-                            ]),
-
-                            Group::make([
-                                Placeholder::make('updated_at')
-                                    ->label('Diperbarui Pada')
-                                    ->content(fn ($record) => $record->updated_at
-                                        ? $record->updated_at->timezone('Asia/Jakarta')->format('d M Y H:i')
-                                        : '-')
-                                    ->extraAttributes(['class' => 'font-semibold text-gray-700']),
-
-                                Placeholder::make('nama')
-                                    ->label('Nama Pelapor')
-                                    ->content(fn ($record) => $record->nama),
-
-                                Placeholder::make('nomor_wa')
-                                    ->label('No. WhatsApp')
-                                    ->content(fn ($record) => $record->nomor_wa),
-
-                                Placeholder::make('email')
-                                    ->label('Email')
-                                    ->content(fn ($record) => $record->email),
-
-                                Placeholder::make('lokasi')
-                                    ->label('Lokasi')
-                                    ->content(fn ($record) => $record->lokasi),
-                            ]),
-                        ]),
+                        Textarea::make('alasan_tolak')
+                            ->label('Alasan Penolakan')
+                            ->placeholder('Tuliskan alasan jika aduan ditolak...')
+                            ->visible(fn ($get) => $get('is_verified') == '0')
+                            ->required(fn ($get) => $get('is_verified') == '0')
+                            ->rows(3),
                 ])
-                ->columns(1),
+                ->columns(1)
+                ->visible(fn () => Auth::user()?->role === 'superadmin'),
+
 
             Section::make('Tindak Lanjut')
                 ->schema([
@@ -123,20 +98,19 @@ class AduanResource extends Resource
                                     'Diproses' => 'Diproses',
                                     'Selesai' => 'Selesai',
                                 ])
-                                ->required(),
+                                ->required()
+                                ->disabled(fn ($get, $record) => $record?->is_verified != 1 || Auth::user()?->role !== 'superadmin'),
+                    
 
                             Select::make('opd_id')
                                 ->label('OPD Penanggung Jawab')
                                 ->options(\App\Models\Opd::pluck('nama', 'id'))
                                 ->searchable()
-                                ->required()
-                                ->disabled(fn () => Auth::user()?->role !== 'superadmin'),
+                                ->disabled(fn ($get, $record) => $record?->is_verified != 1 || Auth::user()?->role !== 'superadmin')
 
-                            // Toggle::make('is_visible')
-                            //     ->label('Tampilkan ke Publik')
-                            //     ->onColor('success')
-                            //     ->offColor('danger')
-                            //     ->visible(fn () => Auth::user()?->role === 'superadmin'),
+                    
+
+                            
                         ]),
                 ]),
         ]);
@@ -149,43 +123,68 @@ class AduanResource extends Resource
                 TextColumn::make('nomor_tiket')
                     ->label('Nomor Tiket')
                     ->sortable()
-                    ->searchable(),
+                    ->searchable()
+                    ->toggleable(), // bisa di-hide/show
+
                 TextColumn::make('judul')
                     ->sortable()
                     ->searchable()
-                    ->limit(20),
+                    ->limit(20)
+                    ->toggleable(),
+
                 TextColumn::make('nama')
                     ->label('Pelapor')
                     ->searchable()
-                    ->limit(15),
+                    ->limit(15)
+                    ->toggleable(),
+
                 TextColumn::make('status')  
                     ->searchable()
+                    ->sortable()
                     ->badge()
                     ->colors([
                         'danger' => 'Menunggu',
                         'warning' => 'Diproses',
                         'success' => 'Selesai',
-                    ]),
+                    ])
+                    ->toggleable(),
+
                 TextColumn::make('opd.nama')
                     ->searchable()
                     ->label('OPD')
-                    ->limit(15),
+                    ->limit(15)
+                    ->toggleable(),
+
+                TextColumn::make('ip_address')   // 👈 Tambahan kolom IP
+                    ->label('IP Address')
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true), 
+                    // default disembunyikan, tapi bisa diaktifkan lewat menu
+
                 TextColumn::make('created_at')
                     ->label('Dibuat tanggal')
                     ->searchable()
                     ->sortable()
-                    ->dateTime('d M Y'),
+                    ->dateTime('d M Y')
+                    ->toggleable(),
+
                 ToggleColumn::make('is_visible')
                     ->label('Tampilkan')
                     ->onIcon('heroicon-o-eye')
                     ->offIcon('heroicon-o-eye-slash')
                     ->onColor('success')
                     ->offColor('danger')
-                    ->visible(fn () => Auth::user()?->role === 'superadmin'),
-                    
+                    ->visible(fn () => Auth::user()?->role === 'superadmin')
+                    ->toggleable(),
             ])
+
+            ->defaultSort('created_at', 'desc')
             ->filters([
                 //
+            ])
+            ->headerActions([
+                ExportAction::make()
+                    ->exporter(AduanExporter::class),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
@@ -209,10 +208,10 @@ class AduanResource extends Resource
     {
         return [
             'index' => Pages\ListAduans::route('/'),
-            // 'create' => Pages\CreateAduan::route('/create'),
             'edit' => Pages\EditAduan::route('/{record}/edit'),
         ];
     }
+
     public static function getEloquentQuery(): \Illuminate\Database\Eloquent\Builder
     {
         $query = parent::getEloquentQuery();
@@ -222,7 +221,7 @@ class AduanResource extends Resource
             $query->where('opd_id', Auth::user()->opd_id);
         }
 
-        return $query->orderBy('created_at', 'desc');
+        return $query;
     }
 
     public static function getNavigationBadge(): ?string
@@ -250,6 +249,9 @@ class AduanResource extends Resource
     {
         return 'danger'; // Warna merah
     }
+
+    
+
 
 
 

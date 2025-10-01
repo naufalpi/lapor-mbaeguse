@@ -54,11 +54,19 @@ class OpdResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('id')->sortable(),
-                TextColumn::make('nama')->sortable()->searchable(),
-                TextColumn::make('created_at')->dateTime('d M Y')->sortable(),
+                TextColumn::make('no')
+                    ->label('No')
+                    ->rowIndex(), // nomor urut otomatis
+
+                TextColumn::make('nama')
+                    ->sortable()
+                    ->searchable(),
+
+                TextColumn::make('created_at')
+                    ->dateTime('d M Y')
+                    ->sortable(),
             ])
-            ->defaultSort('created_at', 'desc')
+            ->defaultSort('nama', 'asc') // urut nama abjad
             ->filters([
                 //
             ])
@@ -70,6 +78,7 @@ class OpdResource extends Resource
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ]);
+
     }
 
     public static function getRelations(): array
