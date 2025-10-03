@@ -23,10 +23,11 @@
                 </div>
 
                 <div>
-                    <label for="email" class="block mb-2 text-sm font-medium text-gray-900">Email (Opsional)</label>
+                    {{-- Email sekarang wajib diisi --}}
+                    <label for="email" class="block mb-2 text-sm font-medium text-gray-900">Email *</label>
                     <input type="email" id="email" wire:model.lazy="email" 
                         class="bg-gray-50 border @error('email') border-red-500 @else border-gray-300 @enderror text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" 
-                        placeholder="Masukkan email Anda">
+                        placeholder="Masukkan email Anda" required>
                     @error('email') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
                 </div>
 
@@ -69,7 +70,19 @@
                     Pilih Kategori Aduan
                 </button>
 
-
+                {{-- Preview kategori yang sudah dipilih --}}
+                <div class="mt-3">
+                    @if(!empty($kategori))
+                        <p class="text-sm text-gray-600 font-medium mb-1">Kategori dipilih:</p>
+                        <div class="flex flex-wrap gap-2">
+                            @foreach($semuaKategori->whereIn('id', $kategori) as $kat)
+                                <span class="px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs font-medium">
+                                    {{ $kat->nama_kategori }}
+                                </span>
+                            @endforeach
+                        </div>
+                    @endif
+                </div>
 
                 <!-- Modal -->
                 <div
@@ -90,7 +103,7 @@
                                 <label class="inline-flex items-center">
                                     <input
                                         type="checkbox"
-                                        wire:model="kategori"
+                                        wire:model.live="kategori"
                                         value="{{ $kat->id }}"
                                         class="checkbox"
                                     >
@@ -185,12 +198,12 @@
 
         @push('scripts')
         <script>
-        function initKirimAduanButton() {
-            const btn = document.getElementById('btn-kirim');
-            if (!btn) return;
+            function initKirimAduanButton() {
+                const btn = document.getElementById('btn-kirim');
+                if (!btn) return;
 
-            btn.addEventListener('click', function () {
-            Swal.fire({
+                btn.addEventListener('click', function () {
+                    Swal.fire({
                         title: 'Kebijakan Privasi',
                         html: `
                             <div style="text-align: justify;">
@@ -205,54 +218,68 @@
                         cancelButtonText: 'Batal',
                     }).then((result) => {
                         if (result.isConfirmed) {
-                            Livewire.dispatch('kirimAduan');
+                              // 🔹 tampilkan loading swal
+            Swal.fire({
+                title: 'Mengirim Aduan...',
+                text: 'Mohon tunggu sebentar',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
+            // jalankan Livewire
+            Livewire.dispatch('kirimAduan');
                         }
                     });
                 });
+            }
 
-                    }
+            document.addEventListener('livewire:navigated', initKirimAduanButton);
+            document.addEventListener('livewire:load', initKirimAduanButton);
 
-                    document.addEventListener('livewire:navigated', initKirimAduanButton);
-                    document.addEventListener('livewire:load', initKirimAduanButton);
+            Livewire.on('aduanBerhasil', ({ nomorTiket, email }) => {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Aduan Berhasil Dikirim!',
+                    html: `
+                        <div class="text-left text-sm text-gray-700">
+                            <p class="leading-relaxed">
+                                Aduan Anda berhasil kami terima, dan <span class="font-semibold">nomor tiket</span> Anda 
+                                sudah kami kirim ke email <span class="text-blue-600 font-medium">${email ?? '-'}</span> 
+                                yang dapat digunakan untuk pemantauan aduan Anda.
+                            </p>
 
-                    Livewire.on('aduanBerhasil', ({ nomorTiket }) => {
-            Swal.fire({
-                icon: 'success',
-                title: 'Aduan Berhasil Dikirim!',
-                html: `
-                    <div class="text-left text-sm text-gray-700">
-                        <p>Terima kasih, aduan Anda telah berhasil dikirim dan akan segera ditindaklanjuti oleh instansi terkait.</p>
-                        <p class="mt-3 font-semibold text-black">Nomor Tiket Anda:</p>
-                        <div class="flex justify-start items-center gap-2 mt-2 relative">
-                            <code id="nomorTiket" class="bg-gray-100 px-3 py-1 rounded text-sm text-black font-mono">${nomorTiket}</code>
-                            <button id="btnSalinTiket" class="text-blue-600 text-sm underline hover:text-blue-800">Salin</button>
-                            <div id="popoverCopied" class="hidden absolute top-full mt-1 left-0 bg-black text-white text-xs rounded py-1 px-2 z-50">
-                                Disalin!
+                            <p class="mt-4 font-semibold text-black">Nomor Tiket Anda:</p>
+                            <div class="flex justify-start items-center gap-2 mt-2 relative">
+                                <code id="nomorTiket" class="bg-gray-100 px-3 py-1 rounded text-sm text-black font-mono">${nomorTiket}</code>
+                                <button id="btnSalinTiket" class="text-blue-600 text-sm underline hover:text-blue-800">Salin</button>
+                                <div id="popoverCopied" class="hidden absolute top-full mt-1 left-0 bg-black text-white text-xs rounded py-1 px-2 z-50">
+                                    Disalin!
+                                </div>
                             </div>
+
+                            <p class="mt-3 text-red-600 font-medium">Tolong simpan nomor tiket Anda untuk keperluan pelacakan aduan.</p>
                         </div>
-                        <p class="mt-3 text-red-600 font-medium">Tolong simpan nomor tiket Anda untuk keperluan pelacakan aduan.</p>
-                    </div>
-                `,
-                confirmButtonText: 'Tutup',
-                didOpen: () => {
-                    const salinBtn = document.getElementById('btnSalinTiket');
-                    const tiketEl = document.getElementById('nomorTiket');
-                    const popover = document.getElementById('popoverCopied');
+                    `,
+                    confirmButtonText: 'Tutup',
+                    didOpen: () => {
+                        const salinBtn = document.getElementById('btnSalinTiket');
+                        const tiketEl = document.getElementById('nomorTiket');
+                        const popover = document.getElementById('popoverCopied');
 
-                    salinBtn.addEventListener('click', () => {
-                        navigator.clipboard.writeText(tiketEl.textContent).then(() => {
-                            // Tampilkan popover
-                            popover.classList.remove('hidden');
-                            // Sembunyikan setelah 1,5 detik
-                            setTimeout(() => popover.classList.add('hidden'), 1500);
+                        salinBtn.addEventListener('click', () => {
+                            navigator.clipboard.writeText(tiketEl.textContent).then(() => {
+                                popover.classList.remove('hidden');
+                                setTimeout(() => popover.classList.add('hidden'), 1500);
+                            });
                         });
-                    });
-                }
+                    }
+                });
             });
-        });
-
         </script>
         @endpush
+
 
     </div>
 </div>

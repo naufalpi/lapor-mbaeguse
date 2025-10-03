@@ -9,7 +9,11 @@ class Tanggapan extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['aduan_id', 'user_id', 'isi_tanggapan'];
+    protected $fillable = ['aduan_id', 'user_id', 'lampiran', 'isi_tanggapan'];
+
+    protected $casts = [
+        'lampiran' => 'array', // otomatis decode/encode json
+    ];
 
     public function aduan()
     {

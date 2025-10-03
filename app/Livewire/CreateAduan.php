@@ -32,7 +32,7 @@ class CreateAduan extends Component
      protected $rules = [
         'nama' => 'nullable|string|max:100',
         'nomor_wa' => 'required|digits_between:9,15',
-        'email' => 'nullable|email|max:100',
+        'email' => 'required|email|max:100',
         'lokasi' => 'required|string|max:255',
         'judul' => 'required|string|max:150',
         'isi' => 'required|string|max:2000',
@@ -111,7 +111,7 @@ class CreateAduan extends Component
         $this->reset(['nama','nomor_wa','email','lokasi','judul','isi','kategori','lampiran']);
 
         // Kirim event ke browser untuk SweetAlert
-        $this->dispatch('aduanBerhasil', nomorTiket: $aduan->nomor_tiket);
+        $this->dispatch('aduanBerhasil', nomorTiket: $aduan->nomor_tiket, email: $aduan->email);
 
     }
 

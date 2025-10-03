@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Resources\RelationManagers\RelationManager;
 
+
 class TanggapansRelationManager extends RelationManager
 {
     protected static string $relationship = 'tanggapans';
@@ -49,14 +50,32 @@ class TanggapansRelationManager extends RelationManager
                     ->helperText('Maksimal 1000 karakter.')
                     ->required()
                     ->columnSpanFull()
-                    ->extraAttributes(['class' => 'text-sm']), // opsional
+                    ->extraAttributes(['class' => 'text-sm']),
+
+                Forms\Components\FileUpload::make('lampiran')
+                    ->label('Lampiran (Opsional)')
+                    ->multiple()
+                    ->maxFiles(3)
+                    ->directory('lampiran-tanggapan')
+                    ->acceptedFileTypes([
+                        'application/pdf',
+                        'image/*',
+                        'application/msword',
+                        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                    ])
+                    ->helperText('Maksimal 3 file. Format: PDF, Word, atau Gambar.')
+       
+                    ->panelLayout('grid')
+                    ->imageEditor()
+                    ->openable(),
+
 
                 Forms\Components\Hidden::make('user_id')
                     ->default(fn () => Auth::id())
                     ->dehydrated(),
             ]);
-
     }
+
 
     public function table(Table $table): Table
     {
@@ -65,12 +84,20 @@ class TanggapansRelationManager extends RelationManager
             ->emptyStateHeading('Belum ada tanggapan yang diberikan')
             ->emptyStateDescription('')
             ->columns([
-                Tables\Columns\TextColumn::make('isi_tanggapan'),
+                Tables\Columns\TextColumn::make('isi_tanggapan')
+                    ->label('Isi Tanggapan')
+                    ->limit(50),
+
+                Tables\Columns\ViewColumn::make('lampiran')
+                    ->label('Lampiran')
+                    ->view('filament.components.lampiran-tanggapan'),
+
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Dibuat')
                     ->dateTime('d M Y')
-                    ->sortable(),   
+                    ->sortable(),
             ])
+
             ->filters([
                 //
             ])

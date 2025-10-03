@@ -234,6 +234,7 @@
 
             {{-- Tab Contents --}}
             <div class="mt-4">
+
                 <!-- Tindak Lanjut -->
                 <div x-show="tab === 'tindak'">
                     @forelse ($aduan->tanggapans as $t)
@@ -248,9 +249,56 @@
                                     {{ $t->created_at->format('d M Y H:i') }} WIB
                                 </span>
                             </div>
-                            <div class="text-sm text-gray-700 leading-relaxed">
+
+                            {{-- Isi tanggapan --}}
+                            <div class="text-sm text-gray-700 leading-relaxed mb-2">
                                 {{ $t->isi_tanggapan }}
                             </div>
+
+                            {{-- Lampiran --}}
+                           @if ($t->lampiran && is_array($t->lampiran) && count($t->lampiran) > 0)
+                                <div class="mt-3">
+                                    <span class="block text-xs font-semibold text-gray-600 mb-1">Lampiran:</span>
+                                    <div class="flex flex-wrap gap-2">
+                                        @foreach ($t->lampiran as $file)
+                                            @php
+                                                $url = Storage::url($file);
+                                                $ext = strtolower(pathinfo($file, PATHINFO_EXTENSION));
+                                            @endphp
+
+                                            @if(in_array($ext, ['jpg','jpeg','png','gif','webp']))
+                                                {{-- Thumbnail gambar --}}
+                                                <a href="{{ $url }}" target="_blank" title="{{ basename($file) }}">
+                                                    <img src="{{ $url }}" 
+                                                        class="w-16 h-16 object-cover rounded border hover:opacity-80 transition" 
+                                                        alt="lampiran">
+                                                </a>
+                                            @elseif($ext === 'pdf')
+                                                {{-- Icon PDF --}}
+                                                <a href="{{ $url }}" target="_blank" title="{{ basename($file) }}" 
+                                                class="inline-flex items-center gap-1 px-2 py-1 text-xs rounded bg-red-50 text-red-700 hover:bg-red-100 border">
+                                                    <x-heroicon-o-document-text class="w-4 h-4" />
+                                                    PDF
+                                                </a>
+                                            @elseif(in_array($ext, ['doc','docx']))
+                                                {{-- Icon Word --}}
+                                                <a href="{{ $url }}" target="_blank" title="{{ basename($file) }}"
+                                                class="inline-flex items-center gap-1 px-2 py-1 text-xs rounded bg-blue-50 text-blue-700 hover:bg-blue-100 border">
+                                                    <x-heroicon-o-document class="w-4 h-4" />
+                                                    Word
+                                                </a>
+                                            @else
+                                                {{-- Icon file umum --}}
+                                                <a href="{{ $url }}" target="_blank" title="{{ basename($file) }}"
+                                                class="inline-flex items-center gap-1 px-2 py-1 text-xs rounded bg-gray-50 text-gray-700 hover:bg-gray-100 border">
+                                                    <x-heroicon-o-paper-clip class="w-4 h-4" />
+                                                    File
+                                                </a>
+                                            @endif
+                                        @endforeach
+                                    </div>
+                                </div>
+                            @endif
                         </div>
                     @empty
                         <div class="p-4 bg-gray-50 border border-dashed border-gray-300 rounded-lg text-center text-sm text-gray-500">
@@ -258,6 +306,7 @@
                         </div>
                     @endforelse
                 </div>
+
 
 
                 <!-- Komentar -->

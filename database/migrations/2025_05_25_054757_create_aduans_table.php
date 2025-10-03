@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('slug');
             $table->text('isi');
             $table->string('nama');
-            $table->string('email')->nullable();
+            $table->string('email');
             $table->string('nomor_wa');
             $table->string('nomor_tiket')->unique();
             $table->string('lokasi');    
