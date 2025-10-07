@@ -65,29 +65,10 @@ class EditAduan extends EditRecord
 
         // ====== CATATAN RIWAYAT ======
 
-        // perubahan verifikasi
-        if ($this->oldIsVerified !== $aduan->is_verified) {
-            if ($aduan->is_verified === 1) {
-                // otomatis tampil publik
-        
-                RiwayatAduan::create([
-                    'aduan_id'   => $aduan->id,
-                    'user_id'    => $userId,
-                    'status'     => 'Diverifikasi',
-                    'keterangan' => 'Aduan diverifikasi dan diterima oleh ' . $userOpdNama,
-                ]);
-            } elseif ($aduan->is_verified === 2) {
-                RiwayatAduan::create([
-                    'aduan_id'   => $aduan->id,
-                    'user_id'    => $userId,
-                    'status'     => 'Ditolak',
-                    'keterangan' => 'Aduan ditolak saat verifikasi oleh ' . $userOpdNama,
-                ]);
-            }
-        }
 
-        // perubahan verifikasi
-        if ($this->oldIsVerified !== $aduan->is_verified && $aduan->is_verified === '1') {
+
+        // perubahan verifikasi (pastikan hanya tercatat saat pertama kali diverifikasi)
+        if ((int) $this->oldIsVerified !== (int) $aduan->is_verified && (int) $aduan->is_verified === 1) {
             RiwayatAduan::create([
                 'aduan_id'   => $aduan->id,
                 'user_id'    => $userId,
@@ -95,6 +76,7 @@ class EditAduan extends EditRecord
                 'keterangan' => 'Aduan berhasil diverifikasi oleh ' . $userOpdNama,
             ]);
         }
+
 
         // perubahan status menjadi selesai
         if ($this->oldStatus !== $aduan->status && $aduan->status === 'Selesai') {
